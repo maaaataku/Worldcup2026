@@ -6,14 +6,16 @@
    - 取得失敗・レート制限時は前回値を保持（画面を壊さない）
    使い方:  FOOTBALL_API_KEY=xxx node scripts/update.mjs
    ============================================================================ */
-import { readFileSync, writeFileSync, existsSync } from 'node:fs';
+import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
-import { formatDateJST, toKickoffJST, todayJST } from './lib.mjs';
+import { formatDateJST, toKickoffJST, todayJST, nowJST } from './lib.mjs';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const STATIC_PATH = join(ROOT, 'data', 'static.json');
 const OUT_PATH = join(ROOT, 'data', 'wc2026.json');
+const HISTORY_DIR = join(ROOT, 'data', 'history');
+const HISTORY_INDEX = join(HISTORY_DIR, 'index.json');
 
 const JP = '日本';
 
@@ -51,12 +53,36 @@ async function main() {
     }
   }
 
-  // --- 変更が無ければ書かない（差分のみ commit させる）---
+  // --- 書き出し（差分のみ）＋履歴スナップショット ---
   const next = JSON.stringify(out, null, 2) + '\n';
   const current = existsSync(OUT_PATH) ? readFileSync(OUT_PATH, 'utf8') : '';
-  if (next === current) { console.log('[update] 差分なし。'); return; }
-  writeFileSync(OUT_PATH, next, 'utf8');
-  console.log('[update] data/wc2026.json を更新しました。');
+  const changed = next !== current;
+  if (changed) {
+    writeFileSync(OUT_PATH, next, 'utf8');
+    console.log('[update] data/wc2026.json を更新しました。');
+  } else {
+    console.log('[update] 差分なし。');
+  }
+  // 変更時は新スナップショットを保存。未変更でも履歴が空ならベースラインを1件作る
+  snapshotHistory(changed ? next : current, changed);
+}
+
+/* wc2026.json を data/history/ に時刻付きで保存し index.json を更新（過去データ閲覧用）。
+   force=false かつ既に履歴があれば何もしない（＝変更時のみ追加、初回だけベースライン作成）。 */
+function snapshotHistory(jsonText, force) {
+  try {
+    const index = readJSON(HISTORY_INDEX) || [];
+    if (!force && index.length > 0) return;
+    if (!existsSync(HISTORY_DIR)) mkdirSync(HISTORY_DIR, { recursive: true });
+    const now = nowJST();
+    const file = `wc2026-${now.stamp}.json`;
+    writeFileSync(join(HISTORY_DIR, file), jsonText, 'utf8');
+    index.unshift({ file, label: now.label, updated: now.date }); // 新しい順
+    writeFileSync(HISTORY_INDEX, JSON.stringify(index, null, 2) + '\n', 'utf8');
+    console.log(`[update] 履歴を保存: data/history/${file}（計 ${index.length} 件）`);
+  } catch (e) {
+    console.warn('[update] 履歴保存に失敗（本体は更新済み）:', e.message);
+  }
 }
 
 /* ---------------------------------------------------------------------------

@@ -66,3 +66,18 @@ export function todayJST() {
   const f = new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Tokyo', year: 'numeric', month: '2-digit', day: '2-digit' });
   return f.format(new Date()); // en-CA は YYYY-MM-DD
 }
+
+/** 今(JST)の各種表記。履歴スナップショットのファイル名・ラベル用 */
+export function nowJST() {
+  const f = new Intl.DateTimeFormat('en-CA', {
+    timeZone: 'Asia/Tokyo', year: 'numeric', month: '2-digit', day: '2-digit',
+    hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false
+  });
+  const p = Object.fromEntries(f.formatToParts(new Date()).map((x) => [x.type, x.value]));
+  const h = p.hour === '24' ? '00' : p.hour;
+  return {
+    date: `${p.year}-${p.month}-${p.day}`,                 // 2026-06-14
+    label: `${p.year}-${p.month}-${p.day} ${h}:${p.minute}`, // 2026-06-14 15:30
+    stamp: `${p.year}${p.month}${p.day}-${h}${p.minute}${p.second}` // 20260614-153012
+  };
+}

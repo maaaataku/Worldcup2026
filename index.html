@@ -51,6 +51,12 @@ a{color:inherit;text-decoration:none}
 .nav a{flex:0 0 auto;font-size:12px;font-weight:700;color:var(--muted);padding:6px 12px;border-bottom:2px solid transparent;white-space:nowrap;transition:.15s}
 .nav a:hover{color:var(--ink)}
 .nav a.on{color:#fff;border-bottom-color:var(--red)}
+.hist-select{margin-top:6px;display:block;margin-left:auto;background:var(--navy-800);color:var(--ink);border:1px solid var(--line-strong);border-radius:5px;font-family:'Noto Sans JP';font-size:10.5px;font-weight:700;padding:3px 7px;cursor:pointer;max-width:172px}
+.hist-select:hover{border-color:var(--cyan)}
+.hist-banner{display:none;max-width:1140px;margin:0 auto;padding:8px 22px;font-size:12px;font-weight:700;color:var(--gold);text-align:center}
+.hist-banner.show{display:block;border-bottom:1px solid var(--line);background:rgba(244,192,78,.07)}
+.hist-banner b{color:#fff}
+.hist-banner a{color:var(--cyan);text-decoration:underline;cursor:pointer;margin-left:9px}
 
 /* ---------- layout ---------- */
 .wrap{max-width:1140px;margin:0 auto;padding:0 22px}
@@ -241,7 +247,8 @@ footer b{color:var(--muted)}
   <div class="topbar-inner">
     <div class="brand"><div class="flag"></div>
       <h1>SAMURAI BLUE ダッシュボード<span>FIFA World Cup 2026</span></h1></div>
-    <div class="updated">データ更新日<br><b id="lastUpdated">—</b></div>
+    <div class="updated">データ更新日<br><b id="lastUpdated">—</b>
+      <select id="histSelect" class="hist-select" aria-label="過去データを表示" title="過去データを表示"></select></div>
     <nav class="nav" id="nav">
       <a href="#next" class="on">次戦</a><a href="#schedule">日程</a><a href="#groupf">グループF</a>
       <a href="#opponents">対戦国</a><a href="#squad">日本代表</a><a href="#nextopp">オランダ詳細</a>
@@ -249,6 +256,8 @@ footer b{color:var(--muted)}
     </nav>
   </div>
 </div>
+
+<div class="hist-banner" id="histBanner"></div>
 
 <main class="wrap">
 
@@ -371,6 +380,7 @@ footer b{color:var(--muted)}
    ============================================================================ */
 const $ = (s,el=document)=>el.querySelector(s);
 const ce = (t,c)=>{const e=document.createElement(t); if(c)e.className=c; return e;};
+let _cdTimer=null; // カウントダウンの interval（再描画時にクリア）
 
 /* nav（DATA 非依存・即時実行） */
 /* nav active */
@@ -383,16 +393,47 @@ const ce = (t,c)=>{const e=document.createElement(t); if(c)e.className=c; return
   secs.forEach(s=>s&&io.observe(s));
 })();
 
-/* データ取得 → 描画。失敗しても画面は壊さない */
-fetch('./data/wc2026.json', { cache: 'no-store' })
-  .then(r => { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
-  .then(render)
-  .catch(err => {
-    console.error('データ取得に失敗:', err);
-    const el = $("#lastUpdated"); if (el) el.textContent = '読み込み失敗';
-  });
+/* データ取得 → 描画。失敗しても画面は壊さない。過去スナップショットも選択可 */
+const LATEST = '__latest__';
+function loadSnapshot(file){
+  const url = (!file || file===LATEST) ? './data/wc2026.json' : './data/history/'+file;
+  fetch(url, { cache: 'no-store' })
+    .then(r => { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+    .then(DATA => { render(DATA); toggleHistBanner(file, DATA); })
+    .catch(err => {
+      console.error('データ取得に失敗:', err);
+      const el = $("#lastUpdated"); if (el) el.textContent = '読み込み失敗';
+    });
+}
+function toggleHistBanner(file, DATA){
+  const banner=$("#histBanner"), sel=$("#histSelect");
+  if (file && file!==LATEST){
+    banner.innerHTML='過去データを表示中：<b>'+((DATA&&DATA.meta&&DATA.meta.updated)||'')+'</b>（スナップショット）<a id="histLatest">最新に戻る</a>';
+    banner.classList.add('show');
+    const a=$("#histLatest"); if(a) a.onclick=()=>{ sel.value=LATEST; loadSnapshot(LATEST); };
+  } else { banner.classList.remove('show'); banner.innerHTML=''; }
+}
+/* 履歴インデックスを読み込み、セレクトを構築（過去データ閲覧の動線） */
+(function initHistory(){
+  const sel=$("#histSelect");
+  fetch('./data/history/index.json', { cache: 'no-store' })
+    .then(r => r.ok ? r.json() : [])
+    .then(list => {
+      const opts=['<option value="'+LATEST+'">最新</option>'];
+      (list||[]).forEach(h => opts.push('<option value="'+h.file+'">'+h.label+'</option>'));
+      sel.innerHTML=opts.join('');
+    })
+    .catch(()=>{ sel.innerHTML='<option value="'+LATEST+'">最新</option>'; });
+  sel.addEventListener('change', ()=> loadSnapshot(sel.value));
+})();
+loadSnapshot(LATEST);
 
 function render(DATA){
+/* 再描画(スナップショット切替)に備え、動的領域を初期化 */
+if(_cdTimer){clearInterval(_cdTimer);_cdTimer=null;}
+['#nmInfo','#countdown','#tlGroup','#tlKo','#oppGrid','#jpPitch','#jpRoster','#nedPitch','#nedRoster','#nedKey','#groupsGrid','#bracket','#phases'].forEach(s=>{const el=$(s);if(el)el.innerHTML='';});
+{const tb=$("#groupTable tbody");if(tb)tb.innerHTML='';}
+['#nmHome','#nmAway'].forEach(s=>{const el=$(s);if(el){el.classList.remove('jp');const nm=el.querySelector('.nm'),mt=el.querySelector('.meta');if(nm)nm.textContent='';if(mt)mt.textContent='';}});
 $("#lastUpdated").textContent = DATA.meta.updated;
 
 /* next match */
@@ -415,7 +456,7 @@ $("#lastUpdated").textContent = DATA.meta.updated;
     const v={d:Math.floor(diff/864e5),h:Math.floor(diff/36e5)%24,m:Math.floor(diff/6e4)%60,s:Math.floor(diff/1e3)%60};
     Object.keys(cells).forEach(k=>cells[k].querySelector(".v").textContent=String(v[k]).padStart(2,"0"));
   }
-  tick(); setInterval(tick,1000);
+  tick(); _cdTimer=setInterval(tick,1000);
 })();
 
 /* schedule */
