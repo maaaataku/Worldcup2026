@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#091230">
+<title>SAMURAI BLUE ダッシュボード｜FIFA World Cup 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700;900&family=Roboto+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   ★ 更新は基本「<script> 内の DATA オブジェクト」だけ ★
+   ============================================================ */
+:root{
+  color-scheme:dark;
+  --navy-900:#091230; --navy-850:#0c1838; --navy-800:#0f1f44;
+  --navy-700:#152a55; --navy-600:#1d3568;
+  --line:rgba(255,255,255,.10); --line-strong:rgba(255,255,255,.18);
+  --ink:#eaf0ff; --muted:#94a4cc; --muted-dim:#67779f;
+  --red:#e4002b; --red-soft:rgba(228,0,43,.16); --red-line:rgba(228,0,43,.5);
+  --gold:#f4c04e; --cyan:#5bc8e8; --green:#3fd68c; --orange:#ff8a3d;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;background:#091230;color-scheme:dark}
+body{font-family:'Noto Sans JP',system-ui,sans-serif;background:#091230;color:var(--ink);-webkit-font-smoothing:antialiased;line-height:1.6}
+a{color:inherit;text-decoration:none}
+
+/* ★ 白地化対策：全コンテンツを濃紺ラッパーで包み、背景を確実に描画 */
+.page{
+  min-height:100vh;
+  background-color:#091230;
+  background-image:
+    radial-gradient(900px 460px at 80% -10%, rgba(228,0,43,.15), transparent 60%),
+    radial-gradient(700px 480px at 4% 2%, rgba(91,200,232,.07), transparent 55%);
+}
+
+/* ---------- top bar ---------- */
+.topbar{position:sticky;top:0;z-index:50;background:#0b1738;border-bottom:1px solid var(--line)}
+.topbar-inner{max-width:1140px;margin:0 auto;padding:13px 22px;display:flex;align-items:flex-start;gap:16px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:11px}
+.flag{width:29px;height:19px;background:#fff;position:relative;flex:0 0 auto;box-shadow:0 1px 5px rgba(0,0,0,.4)}
+.flag::after{content:"";position:absolute;inset:0;margin:auto;width:11px;height:11px;border-radius:50%;background:var(--red)}
+.brand h1{font-size:14.5px;font-weight:900;line-height:1.2;letter-spacing:.02em;color:#fff}
+.brand h1 span{display:block;font-size:10px;letter-spacing:.24em;color:var(--cyan);font-weight:700;font-family:'Oswald';text-transform:uppercase}
+.updated{margin-left:auto;margin-top:1px;font-size:11px;color:var(--muted);text-align:right;white-space:nowrap;line-height:1.45}
+.updated b{color:var(--ink);font-weight:700}
+.nav{width:100%;display:flex;gap:2px;overflow-x:auto;padding-top:3px;scrollbar-width:none}
+.nav::-webkit-scrollbar{display:none}
+.nav a{flex:0 0 auto;font-size:12px;font-weight:700;color:var(--muted);padding:6px 12px;border-bottom:2px solid transparent;white-space:nowrap;transition:.15s}
+.nav a:hover{color:var(--ink)}
+.nav a.on{color:#fff;border-bottom-color:var(--red)}
+
+/* ---------- layout ---------- */
+.wrap{max-width:1140px;margin:0 auto;padding:0 22px}
+section{padding:32px 0 4px}
+.eyebrow{font-family:'Oswald';font-weight:700;letter-spacing:.26em;font-size:10.5px;text-transform:uppercase;color:var(--cyan);margin-bottom:7px}
+.sec-title{font-size:21px;font-weight:900;color:#fff;display:flex;align-items:center;gap:10px;margin-bottom:4px}
+.sec-title::before{content:"";width:3px;height:19px;background:var(--red);flex:0 0 auto}
+.sec-title .n{font-family:'Oswald';color:var(--muted-dim);font-size:14px;font-weight:600}
+.sec-sub{color:var(--muted);font-size:12.5px;margin-bottom:16px;max-width:760px}
+.subhead{font-family:'Oswald';font-weight:700;letter-spacing:.13em;font-size:12px;color:var(--cyan);margin-bottom:11px;display:flex;align-items:center;gap:9px}
+.subhead::after{content:"";flex:1;height:1px;background:var(--line)}
+
+/* ---------- HERO ---------- */
+.hero{padding-top:30px}
+.scoreboard{position:relative;border-radius:12px;overflow:hidden;border:1px solid var(--line-strong);background:linear-gradient(110deg,var(--navy-800),var(--navy-850))}
+.sb-spine{position:absolute;left:0;top:0;bottom:0;width:5px;background:var(--red)}
+.sb-top{display:flex;justify-content:space-between;align-items:center;padding:13px 22px;border-bottom:1px solid var(--line);flex-wrap:wrap;gap:8px}
+.sb-stage{font-family:'Oswald';font-weight:600;letter-spacing:.14em;font-size:12.5px;text-transform:uppercase;color:var(--gold)}
+.sb-live{display:flex;align-items:center;gap:7px;font-size:11px;font-weight:700;color:var(--muted)}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--green);animation:pulse 1.8s infinite}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(63,214,140,.55)}70%{box-shadow:0 0 0 9px rgba(63,214,140,0)}100%{box-shadow:0 0 0 0 rgba(63,214,140,0)}}
+.sb-body{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:10px;padding:28px 22px 22px}
+.team{text-align:center}
+.team .nm{font-size:21px;font-weight:900;line-height:1.15;color:var(--ink)}
+.team .meta{font-size:11px;color:var(--muted);margin-top:6px;font-family:'Oswald';letter-spacing:.08em}
+.team.jp .nm{color:#fff}
+.team.jp .nm::after{content:"";display:block;width:34px;height:3px;background:var(--red);margin:8px auto 0}
+.vs{font-family:'Oswald';font-weight:700;font-size:15px;color:var(--muted-dim);padding:0 6px}
+.sb-info{display:flex;flex-wrap:wrap;gap:8px 26px;padding:0 22px 16px;justify-content:center;color:var(--muted);font-size:12.5px}
+.sb-info b{color:var(--ink);font-weight:700}
+.countdown{display:flex;justify-content:center;gap:9px;padding:0 22px 24px}
+.cd{min-width:60px;text-align:center;background:var(--navy-900);border:1px solid var(--line);border-radius:6px;padding:9px 6px}
+.cd .v{font-family:'Roboto Mono';font-weight:700;font-size:25px;color:var(--cyan);line-height:1}
+.cd .l{font-size:9.5px;letter-spacing:.18em;color:var(--muted);margin-top:5px;text-transform:uppercase}
+.cd.done .v{color:var(--gold);font-size:15px;padding:5px 0}
+
+.cols{display:grid;gap:14px}
+@media(min-width:760px){.c2{grid-template-columns:1fr 1fr;gap:36px}}
+
+/* ---------- timeline ---------- */
+.tl{position:relative;margin-left:5px;padding-left:21px;border-left:1px solid var(--line)}
+.tl-item{position:relative;padding:11px 0;border-bottom:1px solid var(--line)}
+.tl-item:last-child{border-bottom:none}
+.tl-item::before{content:"";position:absolute;left:-26px;top:15px;width:11px;height:11px;border-radius:50%;background:var(--navy-700);border:2px solid var(--muted-dim)}
+.tl-item.win::before{background:var(--green);border-color:var(--green)}
+.tl-item.loss::before{background:var(--red);border-color:var(--red)}
+.tl-item.draw::before{background:var(--gold);border-color:var(--gold)}
+.tl-item.next::before{background:var(--cyan);border-color:var(--cyan);box-shadow:0 0 0 3px rgba(91,200,232,.2)}
+.tl-date{font-family:'Roboto Mono';font-size:11px;color:var(--cyan);letter-spacing:.03em;display:flex;gap:9px;flex-wrap:wrap;align-items:center}
+.tl-stage{color:var(--muted);font-size:10px;border:1px solid var(--line);padding:0 5px}
+.tl-match{font-size:15px;font-weight:900;color:var(--ink);margin:5px 0 2px;display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+.tl-score{font-family:'Oswald';font-weight:700;font-size:16px;padding:0 8px}
+.tl-score.win{color:var(--green)} .tl-score.loss{color:#ff738d} .tl-score.draw{color:var(--gold)}
+.tl-venue{font-size:11.5px;color:var(--muted)}
+.tag{font-size:9.5px;font-weight:700;padding:1px 7px;letter-spacing:.05em}
+.tag.next{background:var(--cyan);color:#04253a}
+.tag.path{color:var(--muted-dim);border:1px solid var(--line)}
+
+/* ---------- standings ---------- */
+.tbl{width:100%;border-collapse:collapse;font-size:12.5px}
+.tbl th,.tbl td{padding:9px 7px;text-align:center;border-bottom:1px solid var(--line);color:var(--ink)}
+.tbl th{font-family:'Oswald';font-weight:600;letter-spacing:.05em;font-size:10.5px;color:var(--muted);text-transform:uppercase}
+.tbl td.team-c{text-align:left;font-weight:700;white-space:nowrap}
+.tbl tr.jp td{background:var(--red-soft)}
+.tbl tr.jp td.team-c{color:#fff}
+.tbl .pos{font-family:'Roboto Mono';color:var(--muted)}
+.tbl .qual{box-shadow:inset 3px 0 0 var(--green)}
+.tbl .pts{font-weight:700;color:#fff}
+.cap-note{font-size:11px;color:var(--muted);margin-top:8px}
+
+/* ---------- opponents（モバイルで潰れない縦積み） ---------- */
+.cmp2 .row{padding:13px 0;border-top:1px solid var(--line)}
+.cmp2 .row:first-child{border-top:none;padding-top:2px}
+.cmp2 .row.hi{box-shadow:inset 3px 0 0 var(--red);padding-left:12px}
+.cmp2 .top{display:flex;align-items:baseline;gap:11px;flex-wrap:wrap}
+.cmp2 .nm{font-size:16px;font-weight:900;color:#fff}
+.cmp2 .badge{font-family:'Roboto Mono';font-size:11px;color:var(--gold)}
+.cmp2 .when{font-family:'Roboto Mono';font-size:11px;color:var(--cyan)}
+.cmp2 .note{font-size:12.5px;color:var(--ink);margin-top:6px;line-height:1.65}
+.cmp2 .kp{font-size:12px;color:var(--muted);margin-top:5px}
+.cmp2 .kp b{color:var(--cyan);font-weight:700;font-size:10.5px;letter-spacing:.04em;margin-right:5px}
+
+/* ---------- note bar ---------- */
+.note-bar{font-size:12.5px;line-height:1.75;margin-bottom:16px;padding:7px 0 7px 13px;color:var(--ink)}
+.note-bar.jp{border-left:3px solid var(--red)}
+.note-bar.jp b{color:#ff97ab}
+.note-bar.ned{border-left:3px solid var(--orange)}
+.note-bar.ned b{color:#ffb37a}
+
+/* ---------- LINEUP ---------- */
+.lineup-grid{display:grid;gap:24px}
+@media(min-width:880px){.lineup-grid{grid-template-columns:minmax(0,372px) 1fr;align-items:start;gap:34px}}
+.formation-label{font-family:'Oswald';font-weight:700;letter-spacing:.07em;font-size:12.5px;color:var(--gold);text-align:center;margin-bottom:11px}
+.pitch{position:relative;width:100%;max-width:372px;margin:0 auto;aspect-ratio:68/98;border-radius:4px;overflow:hidden;border:1px solid var(--line-strong);
+  background-color:#1f6e3b;
+  background-image:repeating-linear-gradient(180deg,rgba(255,255,255,.045) 0 9.09%,rgba(0,0,0,.05) 9.09% 18.18%),radial-gradient(120% 80% at 50% 0%,rgba(255,255,255,.09),transparent 55%)}
+.mk{position:absolute;border:1.3px solid rgba(255,255,255,.28)}
+.mk.mid{left:5%;right:5%;top:50%;height:0;border-width:1.3px 0 0 0}
+.mk.circle{left:50%;top:50%;width:80px;height:80px;border-radius:50%;transform:translate(-50%,-50%)}
+.mk.spot{width:4px;height:4px;border-radius:50%;background:rgba(255,255,255,.45);border:none;left:50%;top:50%;transform:translate(-50%,-50%)}
+.mk.box-t{left:24%;right:24%;top:0;height:15%;border-top:none}
+.mk.box-b{left:24%;right:24%;bottom:0;height:15%;border-bottom:none}
+.mk.g-t{left:39%;right:39%;top:0;height:6.5%;border-top:none}
+.mk.g-b{left:39%;right:39%;bottom:0;height:6.5%;border-bottom:none}
+.pl{position:absolute;transform:translate(-50%,-50%);width:78px;text-align:center;z-index:3}
+.pl .jr{width:30px;height:30px;border-radius:50%;margin:0 auto;display:grid;place-items:center;font-family:'Oswald';font-weight:700;font-size:13px;color:#fff;box-shadow:0 3px 8px rgba(0,0,0,.45);position:relative}
+.pl.jp .jr{background:linear-gradient(160deg,#27397a,#0f1c46);border:1.5px solid var(--red)}
+.pl.ned .jr{background:linear-gradient(160deg,#ff9740,#e76b00);border:1.5px solid rgba(255,255,255,.35);color:#1a1206}
+.pl.gk .jr{background:linear-gradient(160deg,#37dccb,#0d8f86);border:1.6px solid rgba(255,255,255,.7);color:#06302c;box-shadow:0 0 0 2px rgba(55,220,203,.25),0 3px 8px rgba(0,0,0,.45)}
+.pl .nm{font-size:10px;font-weight:700;color:#fff;margin-top:4px;line-height:1.18;text-shadow:0 1px 3px rgba(0,0,0,.95)}
+.pl .nm small{display:block;font-size:8.5px;font-weight:400;color:#ffe1b0;text-shadow:0 1px 3px rgba(0,0,0,.95)}
+.pl .cmark{position:absolute;top:-4px;right:-4px;width:13px;height:13px;background:var(--gold);color:#1a1206;border-radius:50%;font-family:'Oswald';font-weight:700;font-size:8px;display:grid;place-items:center}
+.pitch-cap{font-size:11px;color:var(--muted);text-align:center;margin-top:10px}
+
+/* ---------- roster ---------- */
+.roster .rposblock{padding:9px 0;border-top:1px solid var(--line)}
+.roster .rposblock:first-child{border-top:none;padding-top:0}
+.rposlabel{font-family:'Oswald';font-weight:700;letter-spacing:.1em;font-size:11px;color:var(--cyan);margin-bottom:6px}
+.rposlabel span{color:var(--muted-dim);font-weight:400;font-size:10px;letter-spacing:0;font-family:'Noto Sans JP'}
+.rpills{display:flex;flex-direction:column;gap:3px}
+.rp{display:flex;align-items:baseline;gap:7px;font-size:12.5px;line-height:1.6}
+.rp .rno{font-family:'Oswald';font-weight:700;font-size:12px;color:var(--cyan);min-width:19px;text-align:right}
+.rp .rnm{font-weight:700;color:var(--ink)}
+.rp.cap .rnm{color:#fff}
+.rp .rcl{color:var(--muted);font-size:10.5px}
+.rp .rag{font-family:'Roboto Mono';font-size:9px;color:var(--muted-dim)}
+.rp .mk2{font-size:8.5px;font-weight:700;padding:0 3px}
+.rp .mk2.c{background:var(--red);color:#fff}
+.rp .mk2.in{background:var(--green);color:#04253a}
+.rp .mk2.out{color:var(--muted);border:1px solid var(--line)}
+.rp.out .rnm{text-decoration:line-through;text-decoration-color:var(--red);opacity:.6}
+
+/* ---------- key players ---------- */
+.kp-list{display:grid;gap:0}
+@media(min-width:720px){.kp-list{grid-template-columns:1fr 1fr;column-gap:34px}}
+.kp{padding:10px 0;border-top:1px solid var(--line)}
+.kp h5{font-size:13.5px;font-weight:900;color:var(--ink);display:flex;gap:8px;align-items:baseline}
+.kp h5 .pos{font-family:'Oswald';font-size:10px;color:var(--orange);font-weight:700;letter-spacing:.03em}
+.kp p{font-size:11.5px;color:var(--muted);line-height:1.6;margin-top:3px}
+
+/* ---------- groups ---------- */
+.ggrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(176px,1fr));gap:1px;background:var(--line);border:1px solid var(--line)}
+.gcard{background:#0b1636}
+.gcard h4{font-family:'Oswald';font-weight:700;font-size:12px;letter-spacing:.08em;padding:7px 11px;color:var(--muted);display:flex;justify-content:space-between;border-bottom:1px solid var(--line)}
+.gcard.fhi h4{color:#fff;box-shadow:inset 3px 0 0 var(--red)}
+.gcard ul{list-style:none;padding:5px 0 7px}
+.gcard li{padding:3px 11px;font-size:12px;display:flex;justify-content:space-between;color:var(--ink)}
+.gcard li.jp{color:#fff;font-weight:700}
+.gcard li .seed{color:var(--muted-dim);font-family:'Roboto Mono';font-size:9.5px}
+.gcard li.tbd{color:var(--muted-dim)}
+
+/* ---------- bracket ---------- */
+.bracket-wrap{overflow-x:auto;padding-bottom:8px;scrollbar-width:thin}
+.bracket{display:flex;gap:12px;min-width:760px}
+.round{flex:1;min-width:146px}
+.round h5{font-family:'Oswald';font-weight:700;font-size:10.5px;letter-spacing:.1em;color:var(--cyan);text-transform:uppercase;text-align:center;margin-bottom:11px;padding-bottom:7px;border-bottom:1px solid var(--line)}
+.bcol{display:flex;flex-direction:column;justify-content:space-around;height:100%;gap:7px}
+.tie{border:1px solid var(--line);border-radius:2px;padding:6px 9px;font-size:11px;background:#0b1636}
+.tie.jp{border-color:var(--red-line);background:var(--red-soft)}
+.tie .slot{display:flex;justify-content:space-between;padding:2px 0;color:var(--muted)}
+.tie .slot.fill{color:var(--ink);font-weight:700}
+.tie .slot.fill.jp{color:#fff}
+.tie .slot .sc{font-family:'Roboto Mono';color:var(--gold)}
+.tie .mtag{font-family:'Roboto Mono';font-size:9px;color:var(--muted-dim);margin-bottom:3px;display:flex;justify-content:space-between}
+.final-tie{border-color:var(--gold)}
+
+/* ---------- phases ---------- */
+.phases{display:flex;flex-wrap:wrap;border-top:1px solid var(--line);border-left:1px solid var(--line)}
+.phase{padding:9px 15px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);flex:1 0 auto}
+.phase .pdate{font-family:'Roboto Mono';font-size:10px;color:var(--cyan)}
+.phase .pname{font-weight:700;font-size:12.5px;margin-top:2px;white-space:nowrap;color:var(--ink)}
+.phase.now .pname{color:var(--green)}
+.phase.now .pname::after{content:" ●";font-size:8px;vertical-align:middle}
+
+footer{border-top:1px solid var(--line);margin-top:38px;padding:22px 0 46px;color:var(--muted-dim);font-size:11px;line-height:1.8}
+footer b{color:var(--muted)}
+
+@media(max-width:560px){
+  .sb-body{padding:22px 14px 16px}.team .nm{font-size:17px}
+  .sec-title{font-size:19px}.cd{min-width:52px}.cd .v{font-size:21px}
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <div class="brand"><div class="flag"></div>
+      <h1>SAMURAI BLUE ダッシュボード<span>FIFA World Cup 2026</span></h1></div>
+    <div class="updated">データ更新日<br><b id="lastUpdated">—</b></div>
+    <nav class="nav" id="nav">
+      <a href="#next" class="on">次戦</a><a href="#schedule">日程</a><a href="#groupf">グループF</a>
+      <a href="#opponents">対戦国</a><a href="#squad">日本代表</a><a href="#nextopp">オランダ詳細</a>
+      <a href="#groups">全12組</a><a href="#bracket">トーナメント</a><a href="#phases">大会日程</a>
+    </nav>
+  </div>
+</div>
+
+<main class="wrap">
+
+  <!-- HERO -->
+  <section id="next" class="hero">
+    <div class="scoreboard">
+      <div class="sb-spine"></div>
+      <div class="sb-top"><span class="sb-stage" id="nmStage">—</span>
+        <span class="sb-live"><span class="dot"></span><span id="nmStatus">次戦</span></span></div>
+      <div class="sb-body">
+        <div class="team" id="nmHome"><div class="nm">—</div><div class="meta"></div></div>
+        <div class="vs">VS</div>
+        <div class="team" id="nmAway"><div class="nm">—</div><div class="meta"></div></div>
+      </div>
+      <div class="sb-info" id="nmInfo"></div>
+      <div class="countdown" id="countdown"></div>
+    </div>
+  </section>
+
+  <!-- SCHEDULE -->
+  <section id="schedule">
+    <div class="eyebrow">Road to the final</div>
+    <div class="sec-title"><span class="n">01</span>日本の日程・結果</div>
+    <div class="sec-sub">グループ3試合＋1位通過時のノックアウト最短ルート。時刻はすべて日本時間。</div>
+    <div class="cols c2">
+      <div><div class="subhead">GROUP STAGE ／ グループF</div><div class="tl" id="tlGroup"></div></div>
+      <div><div class="subhead">KNOCKOUT ／ 決勝トーナメント（最短）</div><div class="tl" id="tlKo"></div></div>
+    </div>
+  </section>
+
+  <!-- GROUP F -->
+  <section id="groupf">
+    <div class="eyebrow">Standings</div>
+    <div class="sec-title"><span class="n">02</span>グループF 順位表</div>
+    <div class="sec-sub">上位2チームが自動でラウンド32へ。各組3位のうち成績上位8チームも進出。</div>
+    <table class="tbl" id="groupTable">
+      <thead><tr><th>#</th><th style="text-align:left">国</th><th>試</th><th>勝</th><th>分</th><th>敗</th><th>得</th><th>失</th><th>差</th><th>点</th></tr></thead>
+      <tbody></tbody>
+    </table>
+    <p class="cap-note">緑のライン＝突破圏（上位2位）。Optaは本組を今大会3番目に厳しい組と評価し「本命はオランダ、覆しうるのは日本」と分析。</p>
+  </section>
+
+  <!-- OPPONENTS -->
+  <section id="opponents">
+    <div class="eyebrow">Scouting report</div>
+    <div class="sec-title"><span class="n">03</span>対戦国スカウティング</div>
+    <div class="sec-sub">グループFで対戦する3か国の比較。初戦オランダの詳細は次のセクションに。</div>
+    <div class="cmp2" id="oppGrid"></div>
+  </section>
+
+  <!-- JAPAN -->
+  <section id="squad">
+    <div class="eyebrow">Samurai Blue 26</div>
+    <div class="sec-title"><span class="n">04</span>日本代表 予想スタメン＆26名</div>
+    <div class="sec-sub">森保ジャパン「最高の景色を2026」。左が直近の親善試合ベースの予想スタメン、右が登録26名。</div>
+    <div class="note-bar jp" id="squadNote"></div>
+    <div class="lineup-grid">
+      <div>
+        <div class="formation-label" id="jpForm"></div>
+        <div class="pitch" id="jpPitch"></div>
+        <div class="pitch-cap"><span style="color:#37dccb">●</span>＝GK ／ <span style="color:var(--gold)">C</span>＝主将 ／ 括弧内は併用候補</div>
+      </div>
+      <div id="jpRoster"></div>
+    </div>
+  </section>
+
+  <!-- NETHERLANDS -->
+  <section id="nextopp">
+    <div class="eyebrow">Next opponent · in depth</div>
+    <div class="sec-title"><span class="n">05</span>初戦の相手 ｜ オランダ 詳細</div>
+    <div class="sec-sub">6/15 初戦の“オランイェ”を日本と同じ粒度で。予想スタメン（4-3-3）＋登録26名＋キープレーヤー。</div>
+    <div class="note-bar ned" id="nedNote"></div>
+    <div class="lineup-grid">
+      <div>
+        <div class="formation-label" id="nedForm"></div>
+        <div class="pitch" id="nedPitch"></div>
+        <div class="pitch-cap"><span style="color:#37dccb">●</span>＝GK ／ <span style="color:var(--gold)">C</span>＝主将（ファン・ダイク）</div>
+      </div>
+      <div id="nedRoster"></div>
+    </div>
+    <div class="subhead" style="margin-top:26px">KEY PLAYERS ／ 警戒すべき主力</div>
+    <div class="kp-list" id="nedKey"></div>
+  </section>
+
+  <!-- GROUPS -->
+  <section id="groups">
+    <div class="eyebrow">48 nations · 12 groups</div>
+    <div class="sec-title"><span class="n">06</span>全12組 組み合わせ</div>
+    <div class="sec-sub">史上初の48カ国・3カ国共催。確定した抽選結果を掲載（空欄は公式ドローを入力）。</div>
+    <div class="ggrid" id="groupsGrid"></div>
+  </section>
+
+  <!-- BRACKET -->
+  <section id="bracket">
+    <div class="eyebrow">Knockout bracket</div>
+    <div class="sec-title"><span class="n">07</span>決勝トーナメント表（ブロック）</div>
+    <div class="sec-sub">ラウンド32→決勝の骨組み。日本のルート（F組）をハイライト。横スクロールで全体表示。</div>
+    <div class="bracket-wrap"><div class="bracket" id="bracket"></div></div>
+  </section>
+
+  <!-- PHASES -->
+  <section id="phases">
+    <div class="eyebrow">Tournament calendar</div>
+    <div class="sec-title"><span class="n">08</span>大会全体スケジュール</div>
+    <div class="sec-sub">6月11日 開幕（メキシコシティ）〜 7月19日 決勝（ニューヨーク／ニュージャージー）。現地時間。</div>
+    <div class="phases" id="phases"></div>
+  </section>
+
+  <footer>
+    <b>SAMURAI BLUE Dashboard</b> — FIFA World Cup 2026（アメリカ・カナダ・メキシコ共催）<br>
+    2026年6月時点の公開情報に基づく非公式まとめ。背番号・所属クラブは各国エントリー（日本5/15・27、オランダ5/27発表）時点で、移籍等により異同の可能性あり。最新の確定情報は JFA / FIFA 公式でご確認ください。
+  </footer>
+</main>
+</div>
+
+<script>
+/* ============================================================================
+   ★★★  毎日書き換えるデータ置き場（DATA）  ★★★
+   試合結果: schedule.group の score/result ／ 順位表: groupF の p,w,d,l,gf,ga
+   予想スタメン: lineups.jp/ned の players ／ 更新日: meta.updated
+   ============================================================================ */
+const DATA = {
+
+  meta: { updated: "2026-06-14" },
+
+  nextMatch: {
+    stage: "グループF 第1節", status: "次戦",
+    home: { name: "オランダ", meta: "FIFA 7位 ・ ポット1" },
+    away: { name: "日本",     meta: "FIFA 18位 ・ ポット2", isJP: true },
+    kickoffJST: "2026-06-15T05:00:00+09:00",
+    info: [["会場","ダラス・スタジアム（米国）"],["放送","NHK総合 / BS4K"],["配信","DAZN（日本戦は無料）/ NHK ONE"]]
+  },
+
+  schedule: {
+    group: [
+      { dateJST:"6/15(月) 5:00",  stage:"F組 第1節", home:"オランダ",   away:"日本", venue:"ダラス・スタジアム（米国）",       score:null, result:"next" },
+      { dateJST:"6/21(日) 13:00", stage:"F組 第2節", home:"チュニジア", away:"日本", venue:"モンテレー・スタジアム（メキシコ）", score:null, result:null },
+      { dateJST:"6/26(金) 8:00",  stage:"F組 第3節", home:"スウェーデン", away:"日本", venue:"ダラス・スタジアム（米国）",     score:null, result:null }
+    ],
+    knockout: [
+      { dateJST:"6/30(火) 10:00", round:"ラウンド32", match:"#75",  desc:"F組1位 vs C組2位",     venue:"モンテレー（メキシコ）", fill:false },
+      { dateJST:"7/5(日) 2:00",   round:"ラウンド16", match:"#90",  desc:"#73勝者 vs #75勝者",   venue:"ヒューストン（米国）",   fill:false },
+      { dateJST:"7/10(金) 5:00",  round:"準々決勝",   match:"#97",  desc:"#89勝者 vs #90勝者",   venue:"ボストン（米国）",       fill:false },
+      { dateJST:"7/15(水) 4:00",  round:"準決勝",     match:"#101", desc:"#97勝者 vs #98勝者",   venue:"ダラス（米国）",         fill:false },
+      { dateJST:"7/20(月) 4:00",  round:"決勝",       match:"#104", desc:"#101勝者 vs #102勝者", venue:"NY/NJ（米国）",         fill:false }
+    ]
+  },
+
+  groupF: [
+    { team:"オランダ",   p:0,w:0,d:0,l:0,gf:0,ga:0, isJP:false },
+    { team:"日本",       p:0,w:0,d:0,l:0,gf:0,ga:0, isJP:true },
+    { team:"チュニジア", p:0,w:0,d:0,l:0,gf:0,ga:0, isJP:false },
+    { team:"スウェーデン", p:0,w:0,d:0,l:0,gf:0,ga:0, isJP:false }
+  ],
+
+  opponents: [
+    { name:"オランダ", rank:"7", when:"第1節 6/15(月)",
+      players:["ファン・ダイク","デ・ヨング","ガクポ","デパイ"],
+      note:"欧州予選を6勝2分の無敗で突破した優勝候補。世界最高級のDF陣と中盤の選手層が武器（次セクションで詳細）。" },
+    { name:"チュニジア", rank:"40", when:"第2節 6/21(日)",
+      players:["組織的守備","堅守速攻","球際の強さ"],
+      note:"規律ある守備ブロックと球際の強さが持ち味。引いて守りカウンター。先制して相手を前掛かりにできるかが鍵。" },
+    { name:"スウェーデン", rank:"—", when:"第3節 6/26(金)",
+      players:["ギェケレシュ","セットプレー","フィジカル"],
+      note:"欧州プレーオフ勝者。エースFWギェケレシュの決定力と高さが脅威。突破がかかる大一番になる可能性。" }
+  ],
+
+  lineups: {
+    jp: { team:"jp", formation:"日本　3-4-2-1（直近の親善試合ベース）", players:[
+      { no:1,  n:"鈴木彩艶", x:50, y:91, gk:true },
+      { no:21, n:"伊藤洋輝", x:24, y:73 },
+      { no:3,  n:"谷口彰悟", x:50, y:76, sub:"板倉滉" },
+      { no:22, n:"冨安健洋", x:76, y:73 },
+      { no:15, n:"鎌田大地", x:35, y:57 },
+      { no:24, n:"佐野海舟", x:65, y:57 },
+      { no:13, n:"中村敬斗", x:11, y:43 },
+      { no:14, n:"伊東純也", x:38, y:39 },
+      { no:8,  n:"久保建英", x:62, y:39 },
+      { no:10, n:"堂安律",   x:89, y:43 },
+      { no:18, n:"上田綺世", x:50, y:20 }
+    ]},
+    ned: { team:"ned", formation:"オランダ　4-3-3（予想）", players:[
+      { no:1,  n:"フェルブルッヘン", x:50, y:91, gk:true },
+      { no:5,  n:"アケ",          x:17, y:73 },
+      { no:4,  n:"ファン・ダイク",  x:40, y:76, cap:true },
+      { no:2,  n:"J.ティンバー",   x:60, y:76 },
+      { no:22, n:"ダンフリース",    x:83, y:73 },
+      { no:8,  n:"グラフェンベルフ", x:29, y:52 },
+      { no:21, n:"デ・ヨング",      x:50, y:58 },
+      { no:14, n:"ラインデルス",    x:71, y:52 },
+      { no:11, n:"ガクポ",         x:17, y:29 },
+      { no:10, n:"デパイ",         x:50, y:19 },
+      { no:18, n:"マレン",         x:83, y:29 }
+    ]}
+  },
+
+  squadNote: "<b>遠藤航（前主将・リヴァプール）が負傷で大会を欠場し代表引退を表明。</b> 代わって <b>町野修斗（ボルシアMG）</b> を追加招集、新キャプテンは <b>板倉滉</b>。",
+  squad: {
+    GK:[ {no:23,name:"早川友基",club:"鹿島",age:27},{no:12,name:"大迫敬介",club:"広島",age:26},{no:1,name:"鈴木彩艶",club:"パルマ（伊）",age:23} ],
+    DF:[ {no:5,name:"長友佑都",club:"FC東京",age:39},{no:3,name:"谷口彰悟",club:"シント=トロイデン（白）",age:34},{no:4,name:"板倉滉",club:"アヤックス（蘭）",age:29,cap:true},{no:16,name:"渡辺剛",club:"フェイエノールト（蘭）",age:28},{no:22,name:"冨安健洋",club:"アヤックス（蘭）",age:27},{no:21,name:"伊藤洋輝",club:"バイエルン（独）",age:27},{no:20,name:"瀬古歩夢",club:"ル・アーヴル（仏）",age:25},{no:2,name:"菅原由勢",club:"ブレーメン（独）",age:25},{no:25,name:"鈴木淳之介",club:"コペンハーゲン（丁）",age:23} ],
+    MF:[ {no:6,name:"遠藤航",club:"リヴァプール（英）",age:33,out:true},{no:7,name:"田中碧",club:"リーズ（英）",age:27},{no:14,name:"伊東純也",club:"ゲンク（白）",age:32},{no:15,name:"鎌田大地",club:"クリスタル・パレス（英）",age:29},{no:10,name:"堂安律",club:"フランクフルト（独）",age:27},{no:8,name:"久保建英",club:"R・ソシエダ（西）",age:24},{no:13,name:"中村敬斗",club:"ランス（仏）",age:25},{no:24,name:"佐野海舟",club:"マインツ（独）",age:24},{no:17,name:"鈴木唯人",club:"フライブルク（独）",age:24},{no:"—",name:"町野修斗",club:"ボルシアMG（独）",age:26,in:true} ],
+    FW:[ {no:11,name:"前田大然",club:"セルティック（蘇）",age:28},{no:18,name:"上田綺世",club:"フェイエノールト（蘭）",age:27},{no:19,name:"小川航基",club:"NEC（蘭）",age:28},{no:26,name:"塩貝健人",club:"ヴォルフスブルク（独）",age:21},{no:9,name:"後藤啓介",club:"シント=トロイデン（白）",age:20} ]
+  },
+
+  nedNote: "監督は <b>ロナルド・クーマン</b>。前回大会は準々決勝でアルゼンチンをPK戦まで追い込んでベスト8。主将は <b>ファン・ダイク</b>。所属クラブはエントリー時点。",
+  nedSquad: {
+    GK:[ {no:1,name:"フェルブルッヘン",club:"ブライトン（英）",age:24},{no:13,name:"ローフス",club:"サンダーランド（英）",age:23},{no:23,name:"フレッケン",club:"レヴァークーゼン（独）",age:33} ],
+    DF:[ {no:4,name:"ファン・ダイク",club:"リヴァプール（英）",age:35,cap:true},{no:2,name:"J.ティンバー",club:"アーセナル（英）",age:25},{no:5,name:"アケ",club:"マンC（英）",age:31},{no:6,name:"ファン・ヘッケ",club:"ブライトン（英）",age:26},{no:15,name:"ファン・デ・フェン",club:"トッテナム（英）",age:25},{no:22,name:"ダンフリース",club:"インテル（伊）",age:30},{no:25,name:"ハト",club:"チェルシー（英）",age:20} ],
+    MF:[ {no:21,name:"デ・ヨング",club:"バルセロナ（西）",age:29},{no:8,name:"グラフェンベルフ",club:"リヴァプール（英）",age:24},{no:14,name:"ラインデルス",club:"マンC（英）",age:28},{no:20,name:"コープマイネルス",club:"ユヴェントス（伊）",age:28},{no:3,name:"デ・ローン",club:"アタランタ（伊）",age:35},{no:12,name:"ウィーファー",club:"ブライトン（英）",age:27},{no:16,name:"ティル",club:"PSV（蘭）",age:29},{no:26,name:"Q.ティンバー",club:"フェイエノールト（蘭）",age:25},{no:7,name:"クライファート",club:"ボーンマス（英）",age:27} ],
+    FW:[ {no:10,name:"デパイ",club:"コリンチャンス（伯）",age:32},{no:11,name:"ガクポ",club:"リヴァプール（英）",age:27},{no:18,name:"マレン",club:"A・ヴィラ（英）",age:27},{no:9,name:"ヴェグホルスト",club:"アヤックス（蘭）",age:34},{no:17,name:"ラング",club:"PSV（蘭）",age:27},{no:19,name:"ブロビー",club:"アヤックス（蘭）",age:24},{no:24,name:"サマーフィル",club:"ウェストハム（英）",age:25} ]
+  },
+  nedKey: [
+    { name:"ファン・ダイク", pos:"4・CB・主将", note:"193cm。リヴァプールでも全試合フル出場級の働きで、DFながらヘディングでも得点。対人と統率の絶対的支柱。" },
+    { name:"デ・ヨング", pos:"21・MF", note:"バルセロナの心臓。プレッシャー下でもテンポを握り、運びと配球で攻撃を組み立てる司令塔。" },
+    { name:"ガクポ", pos:"11・LW", note:"193cmの大型ウイング。左から中へ斬り込みフィニッシュまで持ち込む決定力が脅威。" },
+    { name:"デパイ", pos:"10・FW", note:"代表歴代最多得点（108試合55得点）。30歳超でも得点力健在の前線の核。" },
+    { name:"ラインデルス", pos:"14・MF", note:"マンC新司令塔候補。推進力と縦パスで中盤から攻撃を加速させる。" },
+    { name:"ダンフリース", pos:"22・RB", note:"右を上下動するスピード型SB。ゴール前へ飛び出す攻撃参加が持ち味。" }
+  ],
+
+  groups: {
+    A:[["メキシコ","主催"],["南アフリカ","CAF"],["韓国","AFC"],["チェコ","UEFA"]],
+    B:[["カナダ","主催"],["欧州PO","UEFA"],["カタール","AFC"],["スイス","UEFA"]],
+    C:[["",""],["",""],["",""],["",""]], D:[["",""],["",""],["",""],["",""]], E:[["",""],["",""],["",""],["",""]],
+    F:[["オランダ","UEFA"],["日本","AFC"],["チュニジア","CAF"],["スウェーデン","UEFA"]],
+    G:[["",""],["",""],["",""],["",""]], H:[["",""],["",""],["",""],["",""]],
+    I:[["フランス","UEFA"],["セネガル","CAF"],["大陸間PO","—"],["ノルウェー","UEFA"]],
+    J:[["アルゼンチン","CONMEBOL"],["アルジェリア","CAF"],["オーストリア","UEFA"],["ヨルダン","AFC"]],
+    K:[["",""],["",""],["",""],["",""]], L:[["",""],["",""],["",""],["",""]]
+  },
+
+  bracket: {
+    r32:[ { tag:"#73", venue:"7/4", a:{t:"C組1位"}, b:{t:"—"} },
+          { tag:"#75", venue:"6/30", a:{t:"F組1位",jp:true}, b:{t:"C組2位"}, jp:true },
+          { tag:"#89", venue:"7/2", a:{t:"—"}, b:{t:"—"} },
+          { tag:"#90", venue:"7/3", a:{t:"—"}, b:{t:"—"} } ],
+    r16:[ { tag:"#90", venue:"7/5", a:{t:"#73 勝者"}, b:{t:"#75 勝者",jp:true}, jp:true },
+          { tag:"#98", venue:"7/6", a:{t:"—"}, b:{t:"—"} } ],
+    qf:[  { tag:"#97", venue:"7/10", a:{t:"#89 勝者"}, b:{t:"#90 勝者",jp:true}, jp:true } ],
+    sf:[  { tag:"#101", venue:"7/15", a:{t:"#97 勝者",jp:true}, b:{t:"#98 勝者"}, jp:true } ],
+    final:[ { tag:"#104 決勝", venue:"7/20", a:{t:"#101 勝者",jp:true}, b:{t:"#102 勝者"}, jp:true } ]
+  },
+
+  phases:[
+    { date:"6/11–17", name:"グループ第1節", now:true },{ date:"6/18–23", name:"グループ第2節" },
+    { date:"6/24–27", name:"グループ第3節" },{ date:"6/28–7/3", name:"ラウンド32" },
+    { date:"7/4–7", name:"ラウンド16" },{ date:"7/9–11", name:"準々決勝" },
+    { date:"7/14–15", name:"準決勝" },{ date:"7/18", name:"3位決定戦" },{ date:"7/19", name:"決勝" }
+  ]
+};
+/* ============================================================================ */
+
+const $ = (s,el=document)=>el.querySelector(s);
+const ce = (t,c)=>{const e=document.createElement(t); if(c)e.className=c; return e;};
+
+$("#lastUpdated").textContent = DATA.meta.updated;
+
+/* next match */
+(function(){
+  const n=DATA.nextMatch;
+  $("#nmStage").textContent=n.stage; $("#nmStatus").textContent=n.status;
+  const setTeam=(el,t)=>{el.querySelector(".nm").textContent=t.name;el.querySelector(".meta").textContent=t.meta;if(t.isJP)el.classList.add("jp");};
+  setTeam($("#nmHome"),n.home); setTeam($("#nmAway"),n.away);
+  const info=$("#nmInfo"); n.info.forEach(([k,v])=>{const d=ce("div");d.innerHTML=k+"：<b>"+v+"</b>";info.appendChild(d);});
+})();
+
+/* countdown */
+(function(){
+  const target=new Date(DATA.nextMatch.kickoffJST).getTime(), box=$("#countdown");
+  const units=[["日","d"],["時間","h"],["分","m"],["秒","s"]], cells={};
+  units.forEach(([l,k])=>{const c=ce("div","cd");c.innerHTML='<div class="v">--</div><div class="l">'+l+'</div>';box.appendChild(c);cells[k]=c;});
+  function tick(){
+    const diff=target-Date.now();
+    if(diff<=0){box.innerHTML='<div class="cd done"><div class="v">KICK OFF! 🇯🇵</div></div>';return;}
+    const v={d:Math.floor(diff/864e5),h:Math.floor(diff/36e5)%24,m:Math.floor(diff/6e4)%60,s:Math.floor(diff/1e3)%60};
+    Object.keys(cells).forEach(k=>cells[k].querySelector(".v").textContent=String(v[k]).padStart(2,"0"));
+  }
+  tick(); setInterval(tick,1000);
+})();
+
+/* schedule */
+(function(){
+  const g=$("#tlGroup");
+  DATA.schedule.group.forEach(m=>{
+    const cls=m.result&&m.result!=="next"?m.result:(m.result==="next"?"next":"");
+    const it=ce("div","tl-item "+(cls||""));
+    const score=m.score?'<span class="tl-score '+(m.result||"")+'">'+m.score+'</span>':(m.result==="next"?'<span class="tag next">NEXT</span>':'');
+    it.innerHTML='<div class="tl-date">'+m.dateJST+'<span class="tl-stage">'+m.stage+'</span></div>'+
+      '<div class="tl-match">'+m.home+' <span style="color:var(--muted-dim)">vs</span> '+m.away+' '+score+'</div>'+
+      '<div class="tl-venue">'+m.venue+'</div>';
+    g.appendChild(it);
+  });
+  const k=$("#tlKo");
+  DATA.schedule.knockout.forEach(m=>{
+    const it=ce("div","tl-item"+(m.fill?" win":""));
+    it.innerHTML='<div class="tl-date">'+m.dateJST+'<span class="tl-stage">'+m.round+' '+m.match+'</span></div>'+
+      '<div class="tl-match" style="font-size:13.5px">'+m.desc+' <span class="tag path">最短</span></div>'+
+      '<div class="tl-venue">'+m.venue+'</div>';
+    k.appendChild(it);
+  });
+})();
+
+/* group F */
+(function(){
+  const rows=DATA.groupF.map(t=>({...t,pts:t.w*3+t.d,gd:t.gf-t.ga}));
+  rows.sort((a,b)=>b.pts-a.pts||b.gd-a.gd||b.gf-a.gf);
+  const tb=$("#groupTable tbody");
+  rows.forEach((t,i)=>{
+    const tr=ce("tr",t.isJP?"jp":""), qual=i<2?"qual":"";
+    tr.innerHTML='<td class="pos '+qual+'">'+(i+1)+'</td><td class="team-c">'+t.team+'</td>'+
+      '<td>'+t.p+'</td><td>'+t.w+'</td><td>'+t.d+'</td><td>'+t.l+'</td><td>'+t.gf+'</td><td>'+t.ga+'</td>'+
+      '<td>'+(t.gd>0?"+":"")+t.gd+'</td><td class="pts">'+t.pts+'</td>';
+    tb.appendChild(tr);
+  });
+})();
+
+/* opponents (stacked) */
+(function(){
+  const box=$("#oppGrid");
+  DATA.opponents.forEach((o,i)=>{
+    const row=ce("div","row"+(i===0?" hi":""));
+    row.innerHTML='<div class="top"><span class="nm">'+o.name+'</span><span class="badge">FIFA '+o.rank+'</span><span class="when">'+o.when+'</span></div>'+
+      '<div class="note">'+o.note+'</div>'+
+      '<div class="kp"><b>主力</b>'+o.players.join("・")+'</div>';
+    box.appendChild(row);
+  });
+})();
+
+/* reusable pitch */
+function renderPitch(elId, lineup){
+  const p=$("#"+elId);
+  p.innerHTML='<div class="mk box-t"></div><div class="mk box-b"></div><div class="mk g-t"></div><div class="mk g-b"></div>'+
+              '<div class="mk mid"></div><div class="mk circle"></div><div class="mk spot"></div>';
+  lineup.players.forEach(pl=>{
+    const el=ce("div","pl "+lineup.team+(pl.gk?" gk":""));
+    const cmark=pl.cap?'<span class="cmark">C</span>':'';
+    const sub=pl.sub?'<small>('+pl.sub+')</small>':'';
+    el.style.left=pl.x+"%"; el.style.top=pl.y+"%";
+    el.innerHTML='<div class="jr">'+pl.no+cmark+'</div><div class="nm">'+pl.n+sub+'</div>';
+    p.appendChild(el);
+  });
+}
+
+/* reusable roster */
+function renderRoster(elId, squad){
+  const box=$("#"+elId); box.className="roster";
+  const labels={GK:"ゴールキーパー",DF:"ディフェンダー",MF:"ミッドフィールダー",FW:"フォワード"};
+  Object.keys(squad).forEach(pos=>{
+    const arr=squad[pos], block=ce("div","rposblock");
+    block.innerHTML='<div class="rposlabel">'+pos+' <span>'+labels[pos]+' '+arr.length+'</span></div>';
+    const pills=ce("div","rpills");
+    arr.forEach(p=>{
+      const rp=ce("span","rp"+(p.cap?" cap":"")+(p.out?" out":""));
+      const mk=p.cap?'<span class="mk2 c">C</span>':(p.in?'<span class="mk2 in">追加</span>':(p.out?'<span class="mk2 out">離脱</span>':''));
+      rp.innerHTML='<span class="rno">'+p.no+'</span><span class="rnm">'+p.name+'</span><span class="rcl">'+p.club+'</span><span class="rag">'+p.age+'</span>'+mk;
+      pills.appendChild(rp);
+    });
+    block.appendChild(pills); box.appendChild(block);
+  });
+}
+
+$("#squadNote").innerHTML=DATA.squadNote;
+$("#jpForm").textContent=DATA.lineups.jp.formation;
+renderPitch("jpPitch", DATA.lineups.jp);
+renderRoster("jpRoster", DATA.squad);
+
+$("#nedNote").innerHTML=DATA.nedNote;
+$("#nedForm").textContent=DATA.lineups.ned.formation;
+renderPitch("nedPitch", DATA.lineups.ned);
+renderRoster("nedRoster", DATA.nedSquad);
+(function(){
+  const box=$("#nedKey");
+  DATA.nedKey.forEach(k=>{
+    const el=ce("div","kp");
+    el.innerHTML='<h5>'+k.name+' <span class="pos">'+k.pos+'</span></h5><p>'+k.note+'</p>';
+    box.appendChild(el);
+  });
+})();
+
+/* groups */
+(function(){
+  const grid=$("#groupsGrid");
+  Object.keys(DATA.groups).forEach(letter=>{
+    const card=ce("div","gcard"+(letter==="F"?" fhi":""));
+    const lis=DATA.groups[letter].map(([t,seed])=>{
+      if(!t) return '<li class="tbd"><span>未定</span><span class="seed">入力</span></li>';
+      return '<li class="'+(t==="日本"?"jp":"")+'"><span>'+t+'</span><span class="seed">'+seed+'</span></li>';
+    }).join("");
+    card.innerHTML='<h4>GROUP '+letter+(letter==="F"?'<span style="color:var(--red)">JPN</span>':'')+'</h4><ul>'+lis+'</ul>';
+    grid.appendChild(card);
+  });
+})();
+
+/* bracket */
+(function(){
+  const b=DATA.bracket;
+  const rounds=[["ラウンド32",b.r32],["ラウンド16",b.r16],["準々決勝",b.qf],["準決勝",b.sf],["決勝",b.final]];
+  const wrap=$("#bracket");
+  rounds.forEach(([title,ties])=>{
+    const col=ce("div","round"); col.innerHTML='<h5>'+title+'</h5>';
+    const bc=ce("div","bcol");
+    ties.forEach(t=>{
+      const isFinal=title==="決勝";
+      const tie=ce("div","tie"+(t.jp?" jp":"")+(isFinal?" final-tie":""));
+      const slot=s=>{const filled=s.t&&!s.t.includes("組")&&!s.t.includes("勝者")&&!s.t.includes("—");
+        return '<div class="slot'+(filled?" fill":"")+(s.jp?" jp":"")+'"><span>'+(s.t||"—")+'</span><span class="sc">'+(s.sc!=null?s.sc:"")+'</span></div>';};
+      tie.innerHTML='<div class="mtag"><span>'+t.tag+'</span><span>'+t.venue+'</span></div>'+slot(t.a)+slot(t.b);
+      bc.appendChild(tie);
+    });
+    col.appendChild(bc); wrap.appendChild(col);
+  });
+})();
+
+/* phases */
+(function(){
+  const box=$("#phases");
+  DATA.phases.forEach(p=>{
+    const el=ce("div","phase"+(p.now?" now":""));
+    el.innerHTML='<div class="pdate">'+p.date+'</div><div class="pname">'+p.name+'</div>';
+    box.appendChild(el);
+  });
+})();
+
+/* nav active */
+(function(){
+  const links=[...document.querySelectorAll('.nav a')];
+  const secs=links.map(a=>document.querySelector(a.getAttribute('href')));
+  const io=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){
+    const id='#'+e.target.id; links.forEach(l=>l.classList.toggle('on',l.getAttribute('href')===id));}});},
+    {rootMargin:"-45% 0px -50% 0px"});
+  secs.forEach(s=>s&&io.observe(s));
+})();
+</script>
+</body>
+</html>

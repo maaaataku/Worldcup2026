@@ -1,0 +1,13 @@
+# 秘密情報
+.env
+.env.local
+
+# 依存・OS
+node_modules/
+.DS_Store
+npm-debug.log*
+
+# Claude Code ローカル設定（公開しない）
+.claude/settings.local.json
+
+# 注意: data/wc2026.json は「フォールバック源」なので必ずコミットする（無視しない）

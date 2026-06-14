@@ -1,0 +1,14 @@
+{
+  "name": "worldcup2026-japan-dashboard",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "FIFA World Cup 2026・日本代表（SAMURAI BLUE）自動更新ダッシュボード",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "update": "node scripts/update.mjs",
+    "serve": "npx --yes serve -l 5000 ."
+  }
+}
