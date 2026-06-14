@@ -277,6 +277,7 @@ function makeNameResolver(S) {
 
 async function loadProvider() {
   const id = (process.env.FOOTBALL_API_PROVIDER || '').toLowerCase();
+  if (id === 'espn') return await import('./providers/espn.mjs');
   if (id === 'api-football') return await import('./providers/api-football.mjs');
   if (id === 'football-data') return await import('./providers/football-data.mjs');
   return null;
