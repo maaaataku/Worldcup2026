@@ -1,0 +1,51 @@
+name: Update WC2026 data
+
+on:
+  schedule:
+    # 00:00 UTC = 09:00 JST 毎日
+    - cron: '0 0 * * *'
+  workflow_dispatch: {}   # 手動実行も可能
+
+# data/wc2026.json をコミットするために write 権限が必要
+permissions:
+  contents: write
+
+concurrency:
+  group: wc2026-update
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Run updater
+        env:
+          # プロバイダはリポジトリ変数で切替（未設定なら espn＝キー不要）
+          FOOTBALL_API_PROVIDER: ${{ vars.FOOTBALL_API_PROVIDER || 'espn' }}
+          # espn ではキー不要。football-data / api-football を使う場合のみ Secret を設定
+          FOOTBALL_API_KEY: ${{ secrets.FOOTBALL_API_KEY }}
+          # 任意の上書き（未設定でも update.mjs の既定値が使われる）
+          FOOTBALL_LEAGUE_ID: ${{ vars.FOOTBALL_LEAGUE_ID }}
+          FOOTBALL_SEASON: ${{ vars.FOOTBALL_SEASON }}
+          FOOTBALL_COMPETITION: ${{ vars.FOOTBALL_COMPETITION }}
+        run: node scripts/update.mjs
+
+      - name: Commit & push if changed
+        run: |
+          if git diff --quiet -- data/wc2026.json; then
+            echo "差分なし。コミットしません。"
+            exit 0
+          fi
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/wc2026.json
+          git commit -m "chore(data): auto-update wc2026.json [skip ci]"
+          git push
