@@ -11,6 +11,7 @@ const LEAGUE = process.env.FOOTBALL_ESPN_LEAGUE || 'fifa.world';
 const DATES = process.env.FOOTBALL_ESPN_DATES || '20260611-20260719';
 
 export const name = 'espn';
+export const requiresKey = false; // ESPN はAPIキー不要
 
 export async function fetchAll() {
   const [standRes, sbRes] = await Promise.all([

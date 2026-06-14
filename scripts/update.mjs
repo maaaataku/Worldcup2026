@@ -38,7 +38,7 @@ async function main() {
   const key = process.env.FOOTBALL_API_KEY;
   if (!provider) {
     console.warn('[update] プロバイダ未指定。FOOTBALL_API_PROVIDER を設定してください。フォールバックで書き出します。');
-  } else if (!key) {
+  } else if (provider.requiresKey !== false && !key) {
     console.warn(`[update] FOOTBALL_API_KEY 未設定（provider=${provider.name}）。フォールバックで書き出します。`);
   } else {
     try {

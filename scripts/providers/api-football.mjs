@@ -8,6 +8,7 @@ const LEAGUE = process.env.FOOTBALL_LEAGUE_ID || '1';
 const SEASON = process.env.FOOTBALL_SEASON || '2026';
 
 export const name = 'api-football';
+export const requiresKey = true;
 
 export async function fetchAll({ key }) {
   const headers = { 'x-apisports-key': key };

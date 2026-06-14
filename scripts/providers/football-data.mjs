@@ -8,6 +8,7 @@ const BASE = process.env.FOOTBALL_API_BASE || 'https://api.football-data.org/v4'
 const COMP = process.env.FOOTBALL_COMPETITION || 'WC';
 
 export const name = 'football-data';
+export const requiresKey = true;
 
 export async function fetchAll({ key }) {
   const headers = { 'X-Auth-Token': key };
