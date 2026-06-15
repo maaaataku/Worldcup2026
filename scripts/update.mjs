@@ -196,11 +196,16 @@ function buildNextMatch(jpMatches, S, toJA) {
   const live = jpMatches.find((m) => m.phase === 'live');
   const upcoming = jpMatches.find((m) => m.phase === 'pre');
   const m = live || upcoming || jpMatches[jpMatches.length - 1]; // 全消化なら最後の試合
+  // グループ戦の節番号は ESPN に無いので、日本のグループ戦を日付順に並べた位置から決める
+  let round = m.round;
+  if (m.stage === 'GROUP' && !round) {
+    round = jpMatches.filter((x) => x.stage === 'GROUP').indexOf(m) + 1;
+  }
   const home = toJA(m.home.name, m.home.tla);
   const away = toJA(m.away.name, m.away.tla);
   const status = live ? 'LIVE' : upcoming ? '次戦' : '終了';
-  const stage = stageLabel(m);
-  const info = matchInfoFor(m, home, S);
+  const stage = stageLabel(m, round);
+  const info = matchInfoFor(m, home, S, round);
   return {
     stage, status,
     home: teamWithMeta(home, S),
@@ -222,10 +227,10 @@ function teamWithMeta(teamJA, S) {
   return o;
 }
 
-function matchInfoFor(m, homeJA, S) {
+function matchInfoFor(m, homeJA, S, round) {
   if (m.stage === 'GROUP') {
-    const round = m.round || 1;
-    const gi = (S.matchInfo?.group || [])[round - 1];
+    const r = round || m.round || 1;
+    const gi = (S.matchInfo?.group || [])[r - 1];
     if (gi) return [['会場', gi.venue], ...gi.broadcast];
   }
   // ノックアウト等：会場は未確定にしておき放送のみ
@@ -233,9 +238,9 @@ function matchInfoFor(m, homeJA, S) {
   return [['会場', '未定'], ...bc];
 }
 
-function stageLabel(m) {
+function stageLabel(m, round) {
   switch (m.stage) {
-    case 'GROUP': return `グループF 第${m.round || 1}節`;
+    case 'GROUP': return `グループF 第${round || m.round || 1}節`;
     case 'R32': return 'ラウンド32';
     case 'R16': return 'ラウンド16';
     case 'QF': return '準々決勝';
