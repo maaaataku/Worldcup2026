@@ -251,7 +251,7 @@ footer b{color:var(--muted)}
       <select id="histSelect" class="hist-select" aria-label="過去データを表示" title="過去データを表示"></select></div>
     <nav class="nav" id="nav">
       <a href="#next" class="on">次戦</a><a href="#schedule">日程</a><a href="#groupf">グループF</a>
-      <a href="#opponents">対戦国</a><a href="#squad">日本代表</a><a href="#nextopp">オランダ詳細</a>
+      <a href="#opponents">対戦国</a><a href="#squad">日本代表</a><a href="#nextopp">チュニジア詳細</a>
       <a href="#groups">全12組</a><a href="#bracket">トーナメント</a><a href="#phases">大会日程</a>
     </nav>
   </div>
@@ -311,8 +311,8 @@ footer b{color:var(--muted)}
   <!-- JAPAN -->
   <section id="squad">
     <div class="eyebrow">Samurai Blue 26</div>
-    <div class="sec-title"><span class="n">04</span>日本代表 予想スタメン＆26名</div>
-    <div class="sec-sub">森保ジャパン「最高の景色を2026」。左が直近の親善試合ベースの予想スタメン、右が登録26名。</div>
+    <div class="sec-title"><span class="n">04</span>日本代表 スタメン＆26名</div>
+    <div class="sec-sub">森保ジャパン「最高の景色を2026」。左が第1節オランダ戦の先発（3-4-2-1）、右が登録26名。</div>
     <div class="note-bar jp" id="squadNote"></div>
     <div class="lineup-grid">
       <div>
@@ -327,14 +327,14 @@ footer b{color:var(--muted)}
   <!-- NETHERLANDS -->
   <section id="nextopp">
     <div class="eyebrow">Next opponent · in depth</div>
-    <div class="sec-title"><span class="n">05</span>初戦の相手 ｜ オランダ 詳細</div>
-    <div class="sec-sub">6/15 初戦の“オランイェ”を日本と同じ粒度で。予想スタメン（4-3-3）＋登録26名＋キープレーヤー。</div>
+    <div class="sec-title"><span class="n">05</span>次戦の相手 ｜ チュニジア 詳細</div>
+    <div class="sec-sub">6/21 第2節の相手チュニジアを同じ粒度で。第1節の先発（5-3-2）＋登録26名＋キープレーヤー。</div>
     <div class="note-bar ned" id="nedNote"></div>
     <div class="lineup-grid">
       <div>
         <div class="formation-label" id="nedForm"></div>
         <div class="pitch" id="nedPitch"></div>
-        <div class="pitch-cap"><span style="color:#37dccb">●</span>＝GK ／ <span style="color:var(--gold)">C</span>＝主将（ファン・ダイク）</div>
+        <div class="pitch-cap"><span style="color:#37dccb">●</span>＝GK ／ 数字＝背番号（所属クラブは未取得）</div>
       </div>
       <div id="nedRoster"></div>
     </div>
@@ -499,7 +499,7 @@ $("#lastUpdated").textContent = DATA.meta.updated;
 (function(){
   const box=$("#oppGrid");
   DATA.opponents.forEach((o,i)=>{
-    const row=ce("div","row"+(i===0?" hi":""));
+    const row=ce("div","row"+(o.hi?" hi":""));
     row.innerHTML='<div class="top"><span class="nm">'+o.name+'</span><span class="badge">FIFA '+o.rank+'</span><span class="when">'+o.when+'</span></div>'+
       '<div class="note">'+o.note+'</div>'+
       '<div class="kp"><b>主力</b>'+o.players.join("・")+'</div>';
